@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  characterName String         @unique
+  email         String         @unique
+  password      String         @db.VarChar(256)
+  profileImage  String?
+  createdAt     DateTime       @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime       @updatedAt @db.Timestamp(0)
+  deletedAt     DateTime?      @db.Timestamp(0)
+  events        Event[]
+  relationships Relationship[]
+}
+
+model Location {
+  id             Int         @id @default(autoincrement())
+  name           String?
+  location       String
+  addDescription String?     @db.Text
+  createdAt      DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime    @updatedAt @db.Timestamp(0)
+  deletedAt      DateTime?   @db.Timestamp(0)
+  spawnTime      SpawnTime[]
+  events         Event[]
+}
+
+model SpawnTime {
+  id            Int      @id @default(autoincrement())
+  locationId    Int
+  bossSpawn     DateTime
+  bossTerminate DateTime
+
+  location Location @relation(fields: [locationId], references: [id])
+}
+
+model Event {
+  id             Int            @id @default(autoincrement())
+  hostId         Int
+  locationId     Int
+  bossImage      String
+  addDescription String?        @db.Text
+  teamLimit      Int
+  locations      locationStatus
+  createdAt      DateTime
+  updatedAt      DateTime
+  deletedAt      DateTime
+
+  user          User           @relation(fields: [hostId], references: [id])
+  location      Location       @relation(fields: [locationId], references: [id])
+  relationships Relationship[]
+}
+
+model Relationship {
+  id        Int                @id @default(autoincrement())
+  playerId  Int
+  eventId   Int
+  status    RelationshipStatus
+  createdAt DateTime           @default(now()) @db.Timestamp(0)
+  updatedAt DateTime           @updatedAt @db.Timestamp(0)
+
+  user  User  @relation(fields: [playerId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
+}
+
+enum RelationshipStatus {
+  JOINED
+  CANCELED
+  REMOVED
+}
+
+enum locationStatus {
+  ONLINE
+  OFFLINE
+}
