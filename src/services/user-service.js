@@ -11,4 +11,6 @@ userService.findUserByCharacterNameOrEmail = (characterNameOrEmail) =>
     },
   });
 
+userService.findUserById = (userId) => prisma.user.findUnique({ where: { id: userId } });
+
 module.exports = userService;

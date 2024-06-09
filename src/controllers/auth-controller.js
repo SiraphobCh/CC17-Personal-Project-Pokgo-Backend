@@ -1,4 +1,5 @@
 const hashService = require('../services/hash-service');
+const jwtService = require('../services/jwt-service');
 const userService = require('../services/user-service');
 const createError = require('../utils/create-error');
 
@@ -65,10 +66,15 @@ authController.login = async (req, res, next) => {
       );
     }
 
-    res.status(200).json({ message: 'Login Successful' });
+    const accessToken = jwtService.sign({ id: existUser.id });
+    res.status(200).json({ accessToken });
   } catch (error) {
     next(error);
   }
+};
+
+authController.getMe = (req, res, next) => {
+  res.status(200).json({ user: req.user });
 };
 
 module.exports = authController;
