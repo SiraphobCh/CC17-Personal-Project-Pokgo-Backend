@@ -4,13 +4,11 @@ const userService = {};
 
 userService.createUser = (data) => prisma.user.create({ data });
 
-userService.findUserByCharacterName = (characterName) =>
+userService.findUserByCharacterNameOrEmail = (characterNameOrEmail) =>
   prisma.user.findFirst({
-    where: { characterName },
-  });
-userService.findUserByEmail = (email) =>
-  prisma.user.findFirst({
-    where: { email },
+    where: {
+      OR: [{ characterName: characterNameOrEmail }, { email: characterNameOrEmail }],
+    },
   });
 
 module.exports = userService;

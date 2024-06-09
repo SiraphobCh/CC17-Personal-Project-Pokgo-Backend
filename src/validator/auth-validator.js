@@ -8,3 +8,13 @@ exports.registerSchema = Joi.object({
     .pattern(/^[a-zA-Z0-9]{6,}$/),
   confirmPassword: Joi.string().required().valid(Joi.ref('password')).strip(),
 });
+
+exports.loginSchema = Joi.object({
+  characterNameOrEmail: Joi.alternatives()
+    .try(
+      Joi.string().email().required(), // For email
+      Joi.string().required() // For character name
+    )
+    .required(),
+  password: Joi.string().required(),
+});
