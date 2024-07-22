@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Event` MODIFY `locations` ENUM('ONLINE', 'OFFLINE') NOT NULL DEFAULT 'ONLINE';

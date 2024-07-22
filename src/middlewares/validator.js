@@ -1,4 +1,5 @@
-const { registerSchema, loginSchema } = require('../validator/auth-validator');
+const createError = require("../utils/create-error");
+const { registerSchema, loginSchema } = require("../validator/auth-validator");
 
 exports.registerValidator = (req, res, next) => {
   const { value, error } = registerSchema.validate(req.body);
@@ -17,4 +18,15 @@ exports.loginValidator = (req, res, next) => {
 
   req.input = value;
   next();
+};
+
+exports.validateUpdateProfile = (req, res, next) => {
+  try {
+    if (!req.file) {
+      createError({ message: "at least one of profile", statusCode: 400 });
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
 };

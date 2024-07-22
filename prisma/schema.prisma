@@ -27,15 +27,14 @@ model User {
 }
 
 model Location {
-  id             Int         @id @default(autoincrement())
-  name           String?
-  location       String
-  addDescription String?     @db.Text
-  createdAt      DateTime    @default(now()) @db.Timestamp(0)
-  updatedAt      DateTime    @updatedAt @db.Timestamp(0)
-  deletedAt      DateTime?   @db.Timestamp(0)
-  spawnTime      SpawnTime[]
-  events         Event[]
+  id        Int         @id @default(autoincrement())
+  name      String?
+  location  String
+  createdAt DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt DateTime    @updatedAt @db.Timestamp(0)
+  deletedAt DateTime?   @db.Timestamp(0)
+  spawnTime SpawnTime[]
+  events    Event[]
 }
 
 model SpawnTime {
@@ -50,17 +49,18 @@ model SpawnTime {
 model Event {
   id             Int            @id @default(autoincrement())
   hostId         Int
-  locationId     Int
-  bossImage      String
+  locationId     Int?
+  bossImage      String?
+  eventName      String?
   addDescription String?        @db.Text
   teamLimit      Int
-  locations      locationStatus
-  createdAt      DateTime
-  updatedAt      DateTime
-  deletedAt      DateTime
+  locations      locationStatus @default(ONLINE)
+  createdAt      DateTime       @default(now()) @db.Timestamp(0)
+  updatedAt      DateTime       @updatedAt @db.Timestamp(0)
+  deletedAt      DateTime?      @db.Timestamp(0)
 
   user          User           @relation(fields: [hostId], references: [id])
-  location      Location       @relation(fields: [locationId], references: [id])
+  location      Location?      @relation(fields: [locationId], references: [id])
   relationships Relationship[]
 }
 
@@ -68,12 +68,14 @@ model Relationship {
   id        Int                @id @default(autoincrement())
   playerId  Int
   eventId   Int
-  status    RelationshipStatus
+  status    RelationshipStatus @default(JOINED)
   createdAt DateTime           @default(now()) @db.Timestamp(0)
   updatedAt DateTime           @updatedAt @db.Timestamp(0)
 
   user  User  @relation(fields: [playerId], references: [id])
   event Event @relation(fields: [eventId], references: [id])
+
+  @@unique([playerId, eventId])
 }
 
 enum RelationshipStatus {

@@ -1,0 +1,4 @@
+exports.LOCATION_STATUS = {
+  ONLINE: 'ONLINE',
+  OFFLINE: 'OFFLINE',
+};

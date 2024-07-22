@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Relationship` MODIFY `status` ENUM('JOINED', 'CANCELED', 'REMOVED') NOT NULL DEFAULT 'JOINED';

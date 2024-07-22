@@ -1,4 +1,4 @@
-const prisma = require('../models/prisma');
+const prisma = require("../models/prisma");
 
 const userService = {};
 
@@ -12,5 +12,13 @@ userService.findUserByCharacterNameOrEmail = (characterNameOrEmail) =>
   });
 
 userService.findUserById = (userId) => prisma.user.findUnique({ where: { id: userId } });
+
+userService.updateUserById = (data, userId) =>
+  prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data,
+  });
 
 module.exports = userService;
